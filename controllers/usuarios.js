@@ -6,12 +6,29 @@ const { generarJWT } = require('../helpers/jwt');
 
 
 const getUsuarios = async(req, res) => { 
+    //Para recibir de parametro de url el 5 
+    const desde = Number(req.query.desde) || 0;
 
-    const usuarios = await Usuario.find({}, 'nombre email rol google');
+    // const usuarios = await Usuario
+    //                         .find({}, 'nombre email rol google') //agregar pss para cont sin bcrypt
+    //                         .skip(desde)
+    //                         .limit( 5 );
+    // //contar cuantos registros hay
+    // const total = await Usuario.count(); 
+    
+  const [ usuarios, total ] =   await Promise.all([
+        Usuario
+          .find({}, 'nombre email rol google') //agregar pss para cont sin bcrypt
+          .skip(desde)
+          .limit( 5 ),
+
+        Usuario.count()  
+    ])
 
     res.json({
         ok: true,
-        usuarios
+        usuarios,
+        total
     });
 
 }
@@ -34,9 +51,11 @@ const crearUsuario = async(req, res = response) => {
 
         const usuario = new Usuario( req.body );
 
-        // Encriptar contraseña
+        // Encriptar contraseña y guardarla sin encriptar en pss habilitar en modelo y en get
+        //usuario.pss = password;
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync( password, salt );
+        
 
         // Guardar usuario
         await usuario.save();
@@ -103,7 +122,7 @@ const actualizarUsuario = async (req, res = response) => {
         console.log(error);
         res.status(500).json({
             ok: false,
-            msg: 'Error inesperado in actualizarUsuario'
+            msg: 'Error inesperado en actualizarUsuario'
         })
     }
 

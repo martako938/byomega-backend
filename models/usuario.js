@@ -15,6 +15,10 @@ const UsuarioSchema = Schema({
         type: String,
         required: true
     },
+    // pss:{
+    //     type: String,
+    //     required: false
+    // },
     img:{
         type: String,
     },
@@ -30,7 +34,7 @@ const UsuarioSchema = Schema({
 
 });
 
-/* Configuracion para cambiar nombre de _id a uid */
+/* Configuracion para cambiar nombre de _id a uid y excluir la contrasenia del listado en GET */
 UsuarioSchema.method('toJSON', function(){
     const { _v, _id, password, ...object } = this.toObject();
     object.uid = _id;
