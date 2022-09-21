@@ -18,11 +18,11 @@ const getUsuarios = async(req, res) => {
     
   const [ usuarios, total ] =   await Promise.all([
         Usuario
-          .find({}, 'nombre email rol google') //agregar pss para cont sin bcrypt
+          .find({}, 'nombre email rol google img') //agregar pss para cont sin bcrypt
           .skip(desde)
           .limit( 5 ),
 
-        Usuario.count()  
+        Usuario.countDocuments()  
     ])
 
     res.json({

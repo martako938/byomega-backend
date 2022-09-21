@@ -8,8 +8,6 @@ const getEmpleados = async(req, res = response) => {
                                         .populate('usuario', 'nombre img')
                                         .populate('sucursal', 'nombre img');
 
-    
-    
     res.json({
         ok: true,
         empleados
