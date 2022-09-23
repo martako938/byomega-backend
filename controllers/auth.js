@@ -55,7 +55,7 @@ const loginGoogle = async( req, res = response ) => {
         //Imprime en consola de navegador usuario el objeto de google 
         const { email, name, picture } = await googleVerify( req.body.token );
         //Para guardar usuario en DB
-        const usuarioDB = await Usuario.findOne({email });
+        const usuarioDB = await Usuario.findOne({ email });
         let usuario;
 
         if ( !usuarioDB ) {
@@ -69,6 +69,7 @@ const loginGoogle = async( req, res = response ) => {
         } else {
             usuario = usuarioDB;
             usuario.google = true;
+            //Si ya existe el usuario no cambiar la contraseña o cambiarla
             // usuario.password = '@@';
         }
 
@@ -90,11 +91,27 @@ const loginGoogle = async( req, res = response ) => {
             msg: 'token de google no es correcto'
         })
     }
+}
+
+const renewToken = async (req, res = response ) => {
+
+    const uid = req.uid;
+
+    //Generar el TOKEN  - JWT
+    const token = await generarJWT( uid );
+
+    res.json({
+        ok: true,
+        token
+    })
 
 }
 
 
+
+
 module.exports = {
+    loginGoogle,
     login,
-    loginGoogle
+    renewToken
 }

@@ -43,18 +43,76 @@ const crearSucursal = async(req, res = response) => {
 
 }
 
-const actualizarSucursal = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'actualizarSucursal'
-    })
+const actualizarSucursal = async(req, res = response) => {
+
+    const id = req.params.id;
+    //para el uide del usuario q lo creo
+    const uid = req.uid;
+
+    try {
+
+        const sucursal = await Sucursal.findById( id );
+        
+        if( !sucursal ){
+            return res.status(404).json({
+                ok: true,
+                msg: 'No se encontro sucursal con este id',
+                id
+            })
+        }
+        //Actualizando el nombre
+        const cambiosSucursal = {
+            ...req.body,
+            usuario: uid
+        }
+
+        const sucursalActualizada = await Sucursal.findByIdAndUpdate( id, cambiosSucursal, { new: true });
+
+
+        res.json({
+            ok: true,
+            sucursal: sucursalActualizada
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error en actualizarSucursal'
+        });
+    }
+
 }
 
-const borrarSucursal = (req, res = response) => {
-    res.json({
-        ok: true,
-        msg: 'borrarSucursal'
-    })
+const borrarSucursal = async(req, res = response) => {
+    
+    const id = req.params.id;
+
+
+    try {
+        const sucursal = await Sucursal.findById( id );   
+        if( !sucursal ){
+            return res.status(404).json({
+                ok: true,
+                msg: 'No se encontro sucursal con este id',
+                id
+            })
+        }
+        //borrando sucursal pasandole el id por url
+        await Sucursal.findByIdAndDelete( id );
+
+        sucursal.nombre = req.body.nombre;
+        res.json({
+            ok: true,
+            msg: 'Sucursal eliminada'
+        });
+        
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error en borrarSucursal'
+        });
+    }
+
 }
 
 

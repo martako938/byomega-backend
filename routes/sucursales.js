@@ -31,11 +31,16 @@ router.post( '/',
  );
 
  router.put( '/:id', 
-     [],     
+     [
+        validarJWT,
+        check('nombre', 'El nombre de la sucursal es necesario').not().isEmpty(),
+        validarCampos
+     ],     
      actualizarSucursal
 );
 
-router.delete( '/:id',    
+router.delete( '/:id',  
+    validarJWT,  
     borrarSucursal
 );
 

@@ -34,11 +34,19 @@ router.post( '/',
  );
 
  router.put( '/:id', 
-     [],     
+     [
+        validarJWT,
+        check('nombre', 'El nombre del empleado es necesario').not().isEmpty(),
+        check('password', 'El password es obligatorio').not().isEmpty(),
+        check('email', 'El email es obligatorio').isEmail(),
+        check('sucursal', 'El id de la sucursal debe ser valido').isMongoId(),
+        validarCampos  
+     ],     
      actualizarEmpleado
 );
 
-router.delete( '/:id',    
+router.delete( '/:id',   
+    validarJWT, 
     borrarEmpleado
 );
 
